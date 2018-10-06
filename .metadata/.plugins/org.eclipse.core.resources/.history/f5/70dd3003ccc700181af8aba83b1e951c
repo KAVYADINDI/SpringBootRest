@@ -1,0 +1,75 @@
+package com.capgemini.productapp.test;
+
+import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import com.capgemini.productapp.controller.ProductController;
+
+public class ControllerTest {
+
+	@RunWith(SpringRunner.class)
+	@SpringBootTest
+	public class GreeterControllerTest {
+
+		@InjectMocks
+		private ProductController productController;
+
+		private MockMvc mockMvc;
+
+		@Before
+		public void setUp() {
+			MockitoAnnotations.initMocks(this);
+			mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
+		}
+
+//	
+//	
+//	@Test
+//	public void testGreetWhichReturnsStringContent() throws Exception {
+//		mockMvc.perform(get("/greet/john"))
+//		              .andExpect(status().isOk())
+//		              .andExpect(content().string("Hello : john"));
+//	}
+//	
+//	@Test
+//	public void testGreetWhichReturnsGreeterObject() throws Exception {
+//		mockMvc.perform(get("/greet").accept(MediaType.APPLICATION_JSON))				                   			     
+//		              .andExpect(status().isOk())
+//		              .andExpect(content().json("{\"title\": \"greet\", \"message\":\"Hello....\"}"))
+//		              .andDo(print());
+//		             /* .andExpect(jsonPath("$.title").value("greet"))
+//		              .andExpect(jsonPath("$.message").value("Hello...."))
+//		              .andDo(print());*/
+//	}
+
+		@Test
+		public void testAddProduct() throws Exception {
+			mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON).content(
+					"{\"productId\" : 123 ,\"productName\" : \"mobile\" ,\"productCategory\" : \"electronics\",\"productPrice\" : 12000\"}")
+					.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+					.andExpect(jsonPath("$.productId").exists()).andExpect(jsonPath("$.productName").exists())
+					.andExpect(jsonPath("$.productCategory").exists()).andExpect(jsonPath("$.productPrice").exists())
+					.andExpect(jsonPath("$.productId").value("123"))
+					.andExpect(jsonPath("$.productName").value("mobile"))
+					.andExpect(jsonPath("productCategory").value("electronics"))
+					.andExpect(jsonPath("$.productPrice").value("12000")).andDo(print());
+		}
+	}
+
+}
