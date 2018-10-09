@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.customerapp.customerapp.entity.Customer;
+import com.customerapp.customerapp.exceptions.AuthenticationFailedException;
+import com.customerapp.customerapp.exceptions.CustomerAlreadyRegisteredException;
 import com.customerapp.customerapp.exceptions.CustomerNotFoundException;
 import com.customerapp.customerapp.repository.CustomerRepository;
 import com.customerapp.customerapp.service.CustomerService;
@@ -16,7 +18,7 @@ public class CustomerServiceImpl implements CustomerService{
 	private CustomerRepository customerRepository;
 
 	@Override
-	public Customer authenticate(Customer customer) throws CustomerNotFoundException {
+	public Customer authenticate(Customer customer) throws CustomerNotFoundException, AuthenticationFailedException {
 		Optional<Customer> optionalCustomer = customerRepository.findById(customer.getCustomerId());
 		if(optionalCustomer.isPresent())
 		{
@@ -26,14 +28,14 @@ public class CustomerServiceImpl implements CustomerService{
 				if(cust.getCustomerPassword().equals(customer.getCustomerPassword())){
 					return customerRepository.findById(customer.getCustomerId()).get();
 				}	
-				throw new CustomerNotFoundException("id or password is entered incorrectly");
+				throw new AuthenticationFailedException("Username password not match");
 			}
 		}
 		throw new CustomerNotFoundException("Customer does not exists");
 	}
 
 	@Override
-	public Customer updateProfile(Customer customer) {
+	public Customer updateCustomer(Customer customer) {
 		return customerRepository.save(customer);
 	}
 
@@ -47,7 +49,11 @@ public class CustomerServiceImpl implements CustomerService{
 
 	@Override
 	public Customer addCustomer(Customer customer) {
-		return customerRepository.save(customer);
+		Optional<Customer> customerFromDb = customerRepository.findById(customer.getCustomerId());
+		if (!customerFromDb.isPresent()) {
+			return customerRepository.save(customer);
+		}
+		throw new CustomerAlreadyRegisteredException("Customer Already present with id "+ customer.getCustomerId());
 	}
 
 	@Override

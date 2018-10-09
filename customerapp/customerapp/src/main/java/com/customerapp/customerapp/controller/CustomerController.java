@@ -1,7 +1,6 @@
 package com.customerapp.customerapp.controller;
 
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.customerapp.customerapp.entity.Customer;
+import com.customerapp.customerapp.exceptions.AuthenticationFailedException;
 import com.customerapp.customerapp.exceptions.CustomerNotFoundException;
 import com.customerapp.customerapp.service.CustomerService;
 
@@ -40,41 +40,23 @@ public class CustomerController {
 	
 	@PutMapping("/customers")
 	public ResponseEntity<Customer> updateCustomer(@RequestBody Customer Customer) {
-		try {
-			customerService.getCustomer((Customer.getCustomerId()));
 			logger.info("Updated Customer with Id :"+ Customer.getCustomerId()+" to : "+Customer);
-			return new ResponseEntity<Customer>(customerService.updateProfile(Customer), HttpStatus.OK);
-		} catch (CustomerNotFoundException exception) {
-			logger.warn("CUSTOMER NOT FOUND"+ exception.getMessage());
-		}
-		return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Customer>(customerService.updateCustomer(Customer), HttpStatus.OK);
 	}
 	
 	@GetMapping("/customers/{customerId}")
-	public ResponseEntity<Customer> findCustomerById(@PathVariable int customerId) {
-		try {
+	public ResponseEntity<Customer> findCustomerById(@PathVariable int customerId) throws CustomerNotFoundException {
+
 			Customer CustomerFromDb = customerService.getCustomer(customerId);
 			logger.info("ID of Customer to be found : "+customerId);
 			return new ResponseEntity<Customer>(CustomerFromDb, HttpStatus.OK);
-		} catch (CustomerNotFoundException exception) {
-			logger.warn("CUSTOMER NOT FOUND"+ exception.getMessage());
-		}
-		return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
 	}
 
 	@DeleteMapping("/customers/{customerId}")
-	public ResponseEntity<Customer> deleteCustomer(@PathVariable int customerId) {
-		try {
-			Customer CustomerFromDb = customerService.getCustomer(customerId);
-			if (CustomerFromDb != null) {
+	public ResponseEntity<Customer> deleteCustomer(@PathVariable int customerId) throws CustomerNotFoundException {
 				customerService.deleteCustomer(customerId);
 				logger.info("Deleted Customer by id: "+customerId);
 				return new ResponseEntity<Customer>(HttpStatus.OK);
-			}
-		} catch (CustomerNotFoundException exception) {
-			logger.warn("CUSTOMER NOT FOUND"+ exception.getMessage());
-		}
-		return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
 	}
 	
 	@GetMapping("/customers/all")
@@ -84,17 +66,11 @@ public class CustomerController {
 	}
 	
 	@PostMapping("/customers/customer")
-	public ResponseEntity<Customer> authenticateCustomer(@RequestBody Customer customer) {
+	public ResponseEntity<Customer> authenticateCustomer(@RequestBody Customer customer) throws AuthenticationFailedException, CustomerNotFoundException {
 		ResponseEntity<Customer> responseEntity;
-		try {
 			responseEntity = new ResponseEntity<Customer>(customerService.authenticate(customer),
 					HttpStatus.OK);
 			logger.info("Authenticate Customer :"+ customer);
 			return responseEntity;
-		} catch (CustomerNotFoundException e) {
-			
-			logger.warn("SOMETHING WENT WRONG"+ e.getMessage());
-		}	
-		return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
 	}
 }

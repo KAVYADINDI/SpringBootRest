@@ -80,4 +80,5 @@ public class ServiceTest {
 		productServiceImpl.deleteProduct(product);
 		verify(productRepository, times(1)).delete(product);
 	}
+	
 }

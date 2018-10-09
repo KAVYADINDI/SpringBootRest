@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun name="ControllerTest" project="productapp" tests="4" started="4" failures="0" errors="0" ignored="0">
-  <testsuite name="com.capgemini.productapp.test.ControllerTest" time="0.501">
-    <testcase name="addProductTest" classname="com.capgemini.productapp.test.ControllerTest" time="0.36"/>
-    <testcase name="testFindProductById" classname="com.capgemini.productapp.test.ControllerTest" time="0.062"/>
-    <testcase name="testDeleteproduct" classname="com.capgemini.productapp.test.ControllerTest" time="0.032"/>
-    <testcase name="updateProductTest" classname="com.capgemini.productapp.test.ControllerTest" time="0.047"/>
-  </testsuite>
-</testrun>

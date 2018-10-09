@@ -6,6 +6,8 @@
 	</section>
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
+			<item value="C:\Users\KAKALIDI\workspace\workspace springBoot\simplemongodb"/>
+			<item value="C:\Users\KAKALIDI\workspace\workspace springBoot\customerapp"/>
 			<item value="C:\Users\KAKALIDI\workspace\workspace springBoot\productapp"/>
 			<item value="C:\Users\KAKALIDI\Downloads\productapp"/>
 		</list>
