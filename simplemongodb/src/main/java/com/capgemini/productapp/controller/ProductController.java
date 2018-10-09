@@ -1,5 +1,7 @@
 package com.capgemini.productapp.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.capgemini.productapp.entity.Product;
@@ -70,5 +73,27 @@ public class ProductController {
 			// logged the exception
 		}
 		return new ResponseEntity<Product>(HttpStatus.NOT_FOUND);
+	}
+	
+	@GetMapping("/product/searchbycategory/{productCategory}")
+	public ResponseEntity<List<Product>> findProductsByCategory(@PathVariable String productCategory) {
+		List<Product> productFromDb = productService.findProductsByCategory(productCategory);
+		logger.info("Product by category : "+productCategory);
+		return new ResponseEntity<List<Product>>(productFromDb, HttpStatus.OK);
+	}
+	
+
+	@GetMapping("/product/searchbyname/{productName}")
+	public ResponseEntity<List<Product>> findProductsByName(@PathVariable String productName) {
+		List<Product> productFromDb = productService.findProductsByName(productName);
+		logger.info("Product by name: "+productName);
+		return new ResponseEntity<List<Product>>(productFromDb, HttpStatus.OK);
+	}
+	
+	@GetMapping("/product/searchinrange")
+	public ResponseEntity<List<Product>> findProductsByCategory(@RequestParam String productCategory,@RequestParam int lowerLimit,@RequestParam int upperLimit) {
+		List<Product> productFromDb = productService.findProductCategoryInRange(productCategory,lowerLimit,upperLimit);
+		logger.info("Product by category in range: "+productCategory+" "+lowerLimit+"-"+upperLimit);
+		return new ResponseEntity<List<Product>>(productFromDb, HttpStatus.OK);
 	}
 }

@@ -11,4 +11,10 @@ public interface ProductRepository extends MongoRepository<Product, Integer/*dat
 
 	@Query("{'productCategory' : ?0}")
 	public List<Product> findProductsByCategory(String productCategory);
+	
+	@Query("{'productName' : ?0}")
+	public List<Product> findProductsByName(String productName);
+	
+	@Query("{'productCategory' :?0, 'productPrice':{$gt : ?1, $lt :?2}}")
+	public List<Product> findProductCategoryInRange(String productCategory,int lowerLimit,int upperLimit);
 }
